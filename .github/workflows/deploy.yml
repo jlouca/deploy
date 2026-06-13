@@ -1,6 +1,6 @@
 name: Build and Push to ECR
 on: push
-  branches: [ add-workflow]
+  branches: [ main, chore/add-workflow ]
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -8,7 +8,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -17,11 +17,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: Build, tag, and push image to ECR
-         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: deploy
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
+         run: |
           docker build -t deploy .
           docker tag deploy:latest ${{ secrets.ECR_URI }}:latest
           docker push ${{ secrets.ECR_URI }}:latest
