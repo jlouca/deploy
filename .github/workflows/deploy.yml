@@ -19,6 +19,6 @@ jobs:
       - name: Build, tag, and push image to ECR
         run: |
           docker build -t deploy .
-          docker tag deploy:latest ${{ secrets.ECR_URI }}:latest
-          docker push ${{ secrets.ECR_URI }}:latest
+          docker tag deploy:latest ${{ steps.login-ecr.outputs.registry }}/deploy:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/deploy:latest
   
